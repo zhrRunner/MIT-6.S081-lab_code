@@ -72,7 +72,7 @@ runcmd(struct cmd *cmd)
     panic("runcmd");
 
   case EXEC:
-    ecmd = (struct execcmd*)cmd;
+    ecmd = (struct execcmd*)cmd; 
     if(ecmd->argv[0] == 0)
       exit(1);
     exec(ecmd->argv[0], ecmd->argv);
@@ -130,24 +130,33 @@ runcmd(struct cmd *cmd)
   exit(0);
 }
 
+// int scriptfd = -1;  // 用于存储脚本文件描述符
+
 int
-getcmd(char *buf, int nbuf)
+getcmd(char *buf, int nbuf)   // 读取用户输入，并将结果存储在buf中
 {
+  // if(scriptfd == -1){  // 如果脚本文件描述符为-1, 说明不是脚本模式
+  //   fprintf(2, "$ ");
+  // }
   fprintf(2, "$ ");
-  memset(buf, 0, nbuf);
-  gets(buf, nbuf);
+  
+  memset(buf, 0, nbuf);  // 将buf清零
+  gets(buf, nbuf);  // 从标准输入读取一行
   if(buf[0] == 0) // EOF
     return -1;
   return 0;
 }
 
 int
-main(void)
+main(int argc, char *argv[])
 {
   static char buf[100];
   int fd;
+  // if(argc >= 2) {  // 如果有参数
+  //   scriptfd = open(argv[1], O_RDWR);  // 打开脚本文件
+  // }
 
-  // Ensure that three file descriptors are open.
+  // Ensure that three file descriptors are open. 标准输入、标准输出、标准错误
   while((fd = open("console", O_RDWR)) >= 0){
     if(fd >= 3){
       close(fd);
@@ -160,11 +169,11 @@ main(void)
     if(buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' '){
       // Chdir must be called by the parent, not the child.
       buf[strlen(buf)-1] = 0;  // chop \n
-      if(chdir(buf+3) < 0)
+      if(chdir(buf+3) < 0) // 改变当前工作目录
         fprintf(2, "cannot cd %s\n", buf+3);
       continue;
     }
-    if(fork1() == 0)
+    if(fork1() == 0) // 创建一个新的进程,
       runcmd(parsecmd(buf));
     wait(0);
   }
@@ -325,7 +334,7 @@ struct cmd *parseexec(char**, char*);
 struct cmd *nulterminate(struct cmd*);
 
 struct cmd*
-parsecmd(char *s)
+parsecmd(char *s) 
 {
   char *es;
   struct cmd *cmd;

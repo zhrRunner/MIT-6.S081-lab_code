@@ -25,10 +25,10 @@ fmtname(char *path)
 void
 ls(char *path)
 {
-  char buf[512], *p;
+  char buf[512], *p;  //
   int fd;
-  struct dirent de;
-  struct stat st;
+  struct dirent de;  // 目录项
+  struct stat st; // 文件状态
 
   if((fd = open(path, 0)) < 0){
     fprintf(2, "ls: cannot open %s\n", path);
@@ -42,11 +42,11 @@ ls(char *path)
   }
 
   switch(st.type){
-  case T_FILE:
+  case T_FILE:  // 文件
     printf("%s %d %d %l\n", fmtname(path), st.type, st.ino, st.size);
     break;
 
-  case T_DIR:
+  case T_DIR:  // 目录
     if(strlen(path) + 1 + DIRSIZ + 1 > sizeof buf){
       printf("ls: path too long\n");
       break;

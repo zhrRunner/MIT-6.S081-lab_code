@@ -58,18 +58,18 @@ sys_sleep(void)
   int n;
   uint ticks0;
 
-  if(argint(0, &n) < 0)
+  if(argint(0, &n) < 0) 
     return -1;
-  acquire(&tickslock);
-  ticks0 = ticks;
-  while(ticks - ticks0 < n){
-    if(myproc()->killed){
-      release(&tickslock);
+  acquire(&tickslock); // 获取tickslock锁,为什么要获取锁？是因为ticks是全局变量，多个进程可能同时访问ticks
+  ticks0 = ticks; // 记录当前时间
+  while(ticks - ticks0 < n){   // 当前时间 - 记录时间 < 睡眠时间
+    if(myproc()->killed){  // 如果进程被杀死
+      release(&tickslock);  // 释放锁
       return -1;
     }
-    sleep(&ticks, &tickslock);
+    sleep(&ticks, &tickslock);  // 睡眠 sleep函数的参数
   }
-  release(&tickslock);
+  release(&tickslock);   
   return 0;
 }
 

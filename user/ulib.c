@@ -55,11 +55,11 @@ strchr(const char *s, char c)
 char*
 gets(char *buf, int max)
 {
-  int i, cc;
-  char c;
+  int i, cc;  // i 用于跟踪当前写入缓冲区的位置，cc 用于存储 read 函数的返回值
+  char c;  // 用于存储读取的字符
 
   for(i=0; i+1 < max; ){
-    cc = read(0, &c, 1);
+    cc = read(0, &c, 1);  // 从标准输入读取一个字符赋值给 c
     if(cc < 1)
       break;
     buf[i++] = c;
@@ -98,12 +98,12 @@ atoi(const char *s)
 void*
 memmove(void *vdst, const void *vsrc, int n)
 {
-  char *dst;
-  const char *src;
+  char *dst; // 目标地址
+  const char *src; // 源地址
 
-  dst = vdst;
+  dst = vdst; 
   src = vsrc;
-  if (src > dst) {
+  if (src > dst) {  //  
     while(n-- > 0)
       *dst++ = *src++;
   } else {

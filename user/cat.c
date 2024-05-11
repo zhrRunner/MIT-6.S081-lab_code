@@ -9,6 +9,7 @@ cat(int fd)
 {
   int n;
 
+  // read from file descriptor fd and write to stdout
   while((n = read(fd, buf, sizeof(buf))) > 0) {
     if (write(1, buf, n) != n) {
       fprintf(2, "cat: write error\n");
@@ -24,7 +25,7 @@ cat(int fd)
 int
 main(int argc, char *argv[])
 {
-  int fd, i;
+  int fd, i; 
 
   if(argc <= 1){
     cat(0);
